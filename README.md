@@ -1,4 +1,4 @@
-# 9gag filter
+# lichess tracker
 
-Chrome extension to disable content that you don't want
+Chrome extension to add color on the board, like if one piece is under attack, it become red and stuff
 
