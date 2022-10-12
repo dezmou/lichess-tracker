@@ -42,13 +42,17 @@ const BLACK = 1;
     const height = boardEl.clientHeight;
     for (let child of boardEl.childNodes) {
       if (child.className.indexOf("last-move") !== -1) continue;
+      if (child === container) continue;
       const spClass = child.className.split(" ");
       const color = { black: BLACK, white: WHITE }[spClass[0]];
       const type = spClass[1];
       const pos = child.style.transform.split("(")[1].split(")")[0].split(",").map(e => parseInt(e.replace("px", "").trim()))
+
       const x = Math.floor(pos[0] / width / 0.125);
       const y = Math.floor(pos[1] / height / 0.125);
-      board[y][x] = { piece: type, color, child };
+      board[y][x].piece = type;
+      board[y][x].color = color;
+      board[y][x].child = child;
     }
     return board;
   };
@@ -75,6 +79,7 @@ const BLACK = 1;
       for (let x = 0; x < 8; x++) {
         const piece = board[y][x];
         if (piece.piece === "pawn") {
+          piece.hud.style.background = "red";
 
         }
       }
@@ -83,9 +88,13 @@ const BLACK = 1;
 
 
   while (true) {
-    getBoard();
-    // printboard(board);
-    // analyse(board);
+    try {
+      getBoard();
+      // printboard(board);
+      analyse(board);
+    } catch (e) {
+      console.log(e);
+    }
     await new Promise(r => setTimeout(r, 1000));
   }
 })()
