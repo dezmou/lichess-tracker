@@ -9,6 +9,7 @@ const BLACK = 1;
     color: -1,
     child: null,
     hud: null,
+    color: null,
   })))
 
   const chien = document.querySelector("#main-wrap > main > div.analyse__board.main-board > div.cg-wrap.cgv1.orientation-white.manipulable > cg-container > cg-board");
@@ -40,6 +41,12 @@ const BLACK = 1;
     const boardEl = document.querySelector("#main-wrap > main > div.analyse__board.main-board > div.cg-wrap.cgv1.orientation-white.manipulable > cg-container > cg-board");
     const width = boardEl.clientWidth;
     const height = boardEl.clientHeight;
+    for (let line of board) {
+      for (let point of line) {
+        point.piece = "blank";
+        point.color = null;
+      }
+    }
     for (let child of boardEl.childNodes) {
       if (child.className.indexOf("last-move") !== -1) continue;
       if (child === container) continue;
@@ -57,6 +64,17 @@ const BLACK = 1;
     return board;
   };
 
+  const blit = () => {
+    for (let line of board) {
+      for (let point of line) {
+        if (point.color) {
+          point.hud.style.background = point.color;
+        } else {
+          point.hud.style.background = "none";
+        }
+      }
+    }
+  }
 
   const printboard = () => {
     let final = ""
@@ -79,7 +97,7 @@ const BLACK = 1;
       for (let x = 0; x < 8; x++) {
         const piece = board[y][x];
         if (piece.piece === "pawn") {
-          piece.hud.style.background = "red";
+          piece.color = "red";
 
         }
       }
@@ -90,8 +108,8 @@ const BLACK = 1;
   while (true) {
     try {
       getBoard();
-      // printboard(board);
       analyse(board);
+      blit();
     } catch (e) {
       console.log(e);
     }
