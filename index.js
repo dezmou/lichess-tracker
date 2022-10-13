@@ -37,7 +37,7 @@ const COLOR_DISPUTE = "#ff8133"
         const hud = document.createElement("div");
         hud.style.width = `${chien.clientWidth / 8}px`;
         hud.style.height = `${chien.clientHeight / 8}px`;
-        // hud.style.outline = "1px solid blue";
+        hud.style.outline = "1px solid black";
         point.hud = hud;
         divLine.appendChild(hud)
       }
@@ -108,20 +108,67 @@ const COLOR_DISPUTE = "#ff8133"
           if (piece.piece === "pawn") {
 
             if (piece.color === WHITE) {
-              if ((x > 0 && board[y - 1][x - 1].color === BLACK)) {
-                board[y - 1][x - 1].huColor = COLOR_TAKE;
-              }
-              if ((x < 7 && board[y - 1][x + 1].color === BLACK)) {
-                board[y - 1][x + 1].huColor = COLOR_TAKE;
+              for (let add of [
+                [x + 1, y - 1],
+                [x - 1, y - 1],
+              ]) {
+                const xx = add[0];
+                const yy = add[1];
+                if (xx < 0 || xx > 7 || yy < 0 || yy > 7) continue;
+                if (board[yy][xx].piece !== "blank") {
+                  if (piece.color === BLACK) {
+                    if (board[yy][xx].color === WHITE) {
+                      board[yy][xx].huColor = COLOR_VIL_TAKE;
+                    }
+                  } else {
+                    if (board[yy][xx].color === BLACK) {
+                      board[yy][xx].huColor = COLOR_TAKE;
+                    }
+                  }
+                }
+                if (board[yy][xx].piece === "blank") {
+                  if (piece.color === BLACK) {
+                    board[yy][xx].huColor = COLOR_VIL_FREE;
+                  } else {
+                    if (board[yy][xx].huColor === null || board[yy][xx].huColor === COLOR_FREE) {
+                      board[yy][xx].huColor = COLOR_FREE;
+                    } else {
+                      board[yy][xx].huColor = COLOR_DISPUTE;
+                    }
+                  }
+                }
               }
             }
-
             if (piece.color === BLACK) {
-              if ((x > 0 && board[y + 1][x - 1].color === WHITE)) {
-                board[y + 1][x - 1].huColor = COLOR_VIL_TAKE;
-              }
-              if ((x < 7 && board[y + 1][x + 1].color === WHITE)) {
-                board[y + 1][x + 1].huColor = COLOR_VIL_TAKE;
+              for (let add of [
+                [x + 1, y + 1],
+                [x - 1, y + 1],
+              ]) {
+                const xx = add[0];
+                const yy = add[1];
+                if (xx < 0 || xx > 7 || yy < 0 || yy > 7) continue;
+                if (board[yy][xx].piece !== "blank") {
+                  if (piece.color === BLACK) {
+                    if (board[yy][xx].color === WHITE) {
+                      board[yy][xx].huColor = COLOR_VIL_TAKE;
+                    }
+                  } else {
+                    if (board[yy][xx].color === BLACK) {
+                      board[yy][xx].huColor = COLOR_TAKE;
+                    }
+                  }
+                }
+                if (board[yy][xx].piece === "blank") {
+                  if (piece.color === BLACK) {
+                    board[yy][xx].huColor = COLOR_VIL_FREE;
+                  } else {
+                    if (board[yy][xx].huColor === null || board[yy][xx].huColor === COLOR_FREE) {
+                      board[yy][xx].huColor = COLOR_FREE;
+                    } else {
+                      board[yy][xx].huColor = COLOR_DISPUTE;
+                    }
+                  }
+                }
               }
             }
           }
@@ -158,7 +205,7 @@ const COLOR_DISPUTE = "#ff8133"
                   if (piece.color === BLACK) {
                     board[yy][xx].huColor = COLOR_VIL_FREE;
                   } else {
-                    if (board[yy][xx].huColor === null || board[yy][xx].huColor === COLOR_FREE ) {
+                    if (board[yy][xx].huColor === null || board[yy][xx].huColor === COLOR_FREE) {
                       board[yy][xx].huColor = COLOR_FREE;
                     } else {
                       board[yy][xx].huColor = COLOR_DISPUTE;
@@ -201,7 +248,7 @@ const COLOR_DISPUTE = "#ff8133"
                   if (piece.color === BLACK) {
                     board[yy][xx].huColor = COLOR_VIL_FREE;
                   } else {
-                    if (board[yy][xx].huColor === null || board[yy][xx].huColor === COLOR_FREE ) {
+                    if (board[yy][xx].huColor === null || board[yy][xx].huColor === COLOR_FREE) {
                       board[yy][xx].huColor = COLOR_FREE;
                     } else {
                       board[yy][xx].huColor = COLOR_DISPUTE;
@@ -241,7 +288,7 @@ const COLOR_DISPUTE = "#ff8133"
                 if (piece.color === BLACK) {
                   board[yy][xx].huColor = COLOR_VIL_FREE;
                 } else {
-                  if (board[yy][xx].huColor === null || board[yy][xx].huColor === COLOR_FREE ) {
+                  if (board[yy][xx].huColor === null || board[yy][xx].huColor === COLOR_FREE) {
                     board[yy][xx].huColor = COLOR_FREE;
                   } else {
                     board[yy][xx].huColor = COLOR_DISPUTE;
@@ -250,6 +297,46 @@ const COLOR_DISPUTE = "#ff8133"
               }
             }
           }
+
+          if (piece.piece === "king") {
+            for (let add of [
+              [x + 1, y + 1],
+              [x + 1, y - 1],
+              [x - 1, y + 1],
+              [x - 1, y - 1],
+              [x + 1, y - 1],
+              [x + 1, y + 1],
+              [x - 1, y - 1],
+              [x - 1, y + 1],
+            ]) {
+              const xx = add[0];
+              const yy = add[1];
+              if (xx < 0 || xx > 7 || yy < 0 || yy > 7) continue;
+              if (board[yy][xx].piece !== "blank") {
+                if (piece.color === BLACK) {
+                  if (board[yy][xx].color === WHITE) {
+                    board[yy][xx].huColor = COLOR_VIL_TAKE;
+                  }
+                } else {
+                  if (board[yy][xx].color === BLACK) {
+                    board[yy][xx].huColor = COLOR_TAKE;
+                  }
+                }
+              }
+              if (board[yy][xx].piece === "blank") {
+                if (piece.color === BLACK) {
+                  board[yy][xx].huColor = COLOR_VIL_FREE;
+                } else {
+                  if (board[yy][xx].huColor === null || board[yy][xx].huColor === COLOR_FREE) {
+                    board[yy][xx].huColor = COLOR_FREE;
+                  } else {
+                    board[yy][xx].huColor = COLOR_DISPUTE;
+                  }
+                }
+              }
+            }
+          }
+
         }
       }
     };
