@@ -3,6 +3,8 @@ const BLACK = 1;
 
 const COLOR_FREE = `#70ffa5`
 const COLOR_TAKE = "#00a93e"
+const COLOR_VIL_FREE = "#ff6d6d"
+const COLOR_VIL_TAKE = "#bf0000"
 
   ; (async () => {
     const board = Array.from({ length: 8 }).map(e => Array.from({ length: 8 }).map(e => ({
@@ -101,9 +103,9 @@ const COLOR_TAKE = "#00a93e"
       for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
           const piece = board[y][x];
-          if (piece.piece === "pawn") {
-            if (piece.color === WHITE) {
+          if (false && piece.piece === "pawn") {
 
+            if (piece.color === WHITE) {
               if (board[y - 1][x].piece === "blank") {
                 board[y - 1][x].huColor = COLOR_FREE;
                 if (y === 6) {
@@ -113,11 +115,66 @@ const COLOR_TAKE = "#00a93e"
                 }
               }
 
-              if (
-                (x > 0 && board[y - 1][x - 1].color === BLACK)
-                || (x < 7 && board[y - 1][x + 1].color === BLACK)
-              ) {
+              if ((x > 0 && board[y - 1][x - 1].color === BLACK)) {
                 board[y - 1][x - 1].huColor = COLOR_TAKE;
+              }
+              if ((x < 7 && board[y - 1][x + 1].color === BLACK)) {
+                board[y - 1][x + 1].huColor = COLOR_TAKE;
+              }
+            }
+
+            if (piece.color === BLACK) {
+              if (board[y + 1][x].piece === "blank") {
+                board[y + 1][x].huColor = COLOR_VIL_FREE;
+                if (y === 1) {
+                  if (board[y + 2][x].piece === "blank") {
+                    board[y + 2][x].huColor = COLOR_VIL_FREE;
+                  }
+                }
+              }
+
+              if ((x > 0 && board[y + 1][x - 1].color === WHITE)) {
+                board[y + 1][x - 1].huColor = COLOR_VIL_TAKE;
+              }
+              if ((x < 7 && board[y + 1][x + 1].color === WHITE)) {
+                board[y + 1][x + 1].huColor = COLOR_VIL_TAKE;
+              }
+            }
+
+
+          }
+
+          else if (piece.piece === "bishop") {
+            for (let add of [
+              [1, 1],
+              [-1, 1],
+              [-1, -1],
+              [1, -1],
+            ]) {
+              let xx = x;
+              let yy = y;
+              while (true) {
+                xx += add[0];
+                yy += add[1];
+                if (xx > 7) break;
+                if (yy > 7) break;
+                if (xx < 0) break;
+                if (yy < 0) break;
+                if (board[yy][xx].piece !== "blank") {
+                  if (piece.color === BLACK) {
+                    if (board[yy][xx].color === WHITE) {
+                      board[yy][xx].huColor = COLOR_VIL_TAKE;
+                    }
+                  } else {
+                    if (board[yy][xx].color === BLACK) {
+                      board[yy][xx].huColor = COLOR_TAKE;
+                    }
+                  }
+                  break;
+                }
+                if (board[yy][xx].piece === "blank") {
+                  board[yy][xx].huColor = piece.color === BLACK ? COLOR_VIL_FREE : COLOR_FREE;
+                }
               }
             }
           }
@@ -130,7 +187,7 @@ const COLOR_TAKE = "#00a93e"
       try {
         getBoard();
         analyse(board);
-        printboard()
+        // printboard()
         blit();
       } catch (e) {
         console.log(e);
