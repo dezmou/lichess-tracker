@@ -9,10 +9,12 @@ const BLACK = 1;
     color: -1,
     child: null,
     hud: null,
-    color: null,
+    huColor: null,
   })))
 
-  const chien = document.querySelector("#main-wrap > main > div.analyse__board.main-board > div.cg-wrap.cgv1.orientation-white.manipulable > cg-container > cg-board");
+  const chien = document.getElementsByTagName("cg-board")[0]
+
+  // const chien = document.querySelector("#main-wrap > main > div.analyse__board.main-board > div.cg-wrap.cgv1.orientation-white.manipulable > cg-container > cg-board");
   const container = document.createElement("div");
   container.style.width = `${chien.clientWidth}px`;
   container.style.height = `${chien.clientHeight}px`;
@@ -38,13 +40,15 @@ const BLACK = 1;
   chien.appendChild(container)
 
   const getBoard = () => {
-    const boardEl = document.querySelector("#main-wrap > main > div.analyse__board.main-board > div.cg-wrap.cgv1.orientation-white.manipulable > cg-container > cg-board");
+    // const boardEl = document.querySelector("#main-wrap > main > div.analyse__board.main-board > div.cg-wrap.cgv1.orientation-white.manipulable > cg-container > cg-board");
+    const boardEl = document.getElementsByTagName("cg-board")[0]
+
     const width = boardEl.clientWidth;
     const height = boardEl.clientHeight;
     for (let line of board) {
       for (let point of line) {
         point.piece = "blank";
-        point.color = null;
+        point.huColor = null;
       }
     }
     for (let child of boardEl.childNodes) {
@@ -67,8 +71,8 @@ const BLACK = 1;
   const blit = () => {
     for (let line of board) {
       for (let point of line) {
-        if (point.color) {
-          point.hud.style.background = point.color;
+        if (point.huColor) {
+          point.hud.style.background = point.huColor;
         } else {
           point.hud.style.background = "none";
         }
@@ -81,7 +85,7 @@ const BLACK = 1;
     for (let line of board) {
       let str = ""
       for (let point of line) {
-        if (point.piece !== "blank") {
+        if (point.piece === "pawn") {
           str += " X "
         } else {
           str += " . "
@@ -97,8 +101,7 @@ const BLACK = 1;
       for (let x = 0; x < 8; x++) {
         const piece = board[y][x];
         if (piece.piece === "pawn") {
-          piece.color = "red";
-
+          piece.huColor = "red";
         }
       }
     }
@@ -107,12 +110,13 @@ const BLACK = 1;
 
   while (true) {
     try {
-      getBoard();
-      analyse(board);
-      blit();
+        getBoard();
+        analyse(board);
+        printboard()
+        blit();
     } catch (e) {
       console.log(e);
     }
-    await new Promise(r => setTimeout(r, 1000));
+    await new Promise(r => setTimeout(r, 300));
   }
 })()
